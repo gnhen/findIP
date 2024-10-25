@@ -1,14 +1,16 @@
-import socket
+import subprocess
 
 
 def get_wifi_ip():
-    try:
-        hostname = socket.gethostname()
-        ip_address = socket.gethostbyname(hostname)
-        print(ip_address)
-    except socket.error as e:
-        print(f"Error retrieving IP address: {e}")
+    command = "powershell \"Get-NetIPAddress -InterfaceAlias Wi-Fi | Where-Object {$_.AddressFamily -eq 'IPv4'} | Select-Object -ExpandProperty IPAddress\""
+    result = subprocess.run(command, capture_output=True, text=True, shell=True)
+    print(result.stdout.strip())
 
 
 if __name__ == "__main__":
     get_wifi_ip()
+
+    while True:
+        user_input = input("Press 'Q' to quit: ").strip().upper()
+        if user_input == "Q":
+            break
